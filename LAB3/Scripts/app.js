@@ -244,7 +244,7 @@
             $("#tasklist").html(`<a id="tasklist" class="nav-link" href="#"><i class="fas fa-list-alt "></i> TaskList</a>`);
             $("#tasklist").on("click", function () {
                 AddNavigationEvents();
-                LoadLink("task-list.html");
+                LoadLink("task-list");
             });
 
             
