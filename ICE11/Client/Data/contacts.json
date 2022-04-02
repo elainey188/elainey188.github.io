@@ -1,0 +1,25 @@
+{
+    "users":
+    [
+        {
+            "DisplayName": "John Smith",
+            "ContactNumber": "41665555",
+            "EmailAddress": "spiderman@example.com"
+           
+        },
+        {
+            "DisplayName": "Dr. Stephen Strange",
+            "ContactNumber": "345654325",
+            "EmailAddress": "stephen@example.com"
+           
+        },
+        {
+            "DisplayName": "Elaine Nankanja",
+            "ContactNumber": "345678954",
+            "EmailAddress": "elaine@example.com"
+           
+        }
+
+    
+    ]
+}
