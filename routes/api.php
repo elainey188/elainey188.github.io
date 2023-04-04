@@ -18,10 +18,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
 Route::post('/jobs', 'App\Http\Controllers\JobPostingController@store');
 
-Route::get('/jobs', 'JobPostingController@index');
+Route::get('/jobs', 'App\Http\Controllers\JobPostingController@index');
 
 Route::post('/register', 'App\Http\Controllers\Auth\RegisterController@register');
 

@@ -12,11 +12,11 @@
 <body>
 
     <!-- React root DOM -->
-    <div id="random">
+    <div id="Home">
     </div>
 
     <!-- React JS -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ asset('js/App.js') }}" defer></script>
 
 </body>
 </html>

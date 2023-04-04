@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser } from '@fortawesome/free-solid-svg-icons';
 
 import './header.css';
 import logo from '../images/jhc logo.png';
@@ -26,12 +24,15 @@ function Header() {
         <ul>
           <li><Link to="/pages/Jobs" className="header-link">My Jobs</Link></li>
           <li><Link to="/pages/Employers" className="header-link">Employers</Link></li>
-          <li><Link to="/pages/Login" className="header-link">Sign In</Link></li>
+          {isLoggedIn ? (
+            <>
+              <li><Link to="/pages/MyProfile" className="header-link">My Profile</Link></li>
+              <li><button onClick={handleLogout} className="header-link">Logout</button></li>
+            </>
+          ) : (
+            <li><Link to="/pages/Login" className="header-link">Sign In</Link></li>
+          )}
           <li><Link to="/pages/Upload" className="header-link">Upload Resume/Cover Letter</Link></li>
-          <Link to="/pages/MyProfile" className="header-link">
-  <li><FontAwesomeIcon icon={faUser} /></li>
-</Link>
-
         </ul>
       </nav>
     </header>

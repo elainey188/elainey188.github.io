@@ -10,9 +10,9 @@ class ResumesTableSeeder extends Seeder
     public function run()
     {
         
-        $skillIds = DB::table('skills')->take(6)->pluck('PK_SkillID')->toArray();
+        $skillIds = DB::table('skills')->take(7)->pluck('PK_SkillID')->toArray();
 
-        $selectedSkillIds = array_rand(array_flip($skillIds), 6);
+        $selectedSkillIds = array_rand(array_flip($skillIds), 7);
         $skillIdsString = implode(',', $selectedSkillIds);
         
 

@@ -27,3 +27,14 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+
+
+Route::prefix('api')->group(function () {
+    Route::post('/job_postings', [JobPostingController::class, 'store']);
+    Route::get('/job_postings', [JobPostingController::class, 'index']);
+});
+
+Route::get('/job-post', function () {
+    return view('job-post');
+})->name('job-post');
