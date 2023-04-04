@@ -1,36 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './post-job.css';
-import axios from 'axios';
+import { useNavigate} from 'react-router-dom';
+import JobPostings from './JobPostings';
 
-class PostJob extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      job_title: '',
-      company_name: '',
-      salary: '',
-      job_description: '',
-      location: '',
-      industry: '',
-      job_type: '',
-      error: '',
-      jobPostings: [],
-    };
-  }
+function PostJob() {
+  const [jobPostings, setJobPostings] = useState(
+    JSON.parse(localStorage.getItem('jobPostings') || '[]')
+  );
+  const [job_title, setJobTitle] = useState('');
+  const [company_name, setCompanyName] = useState('');
+  const [salary, setSalary] = useState('');
+  const [job_description, setJobDescription] = useState('');
+  const [location, setLocation] = useState('');
+  const [industry, setIndustry] = useState('');
+  const [job_type, setJobType] = useState('');
+  const [error, setError] = useState('');
+  const [newJobPosted, setNewJobPosted] = useState(null);
 
-  componentDidMount() {
-    axios.get('/api/jobs')
-      .then((response) => {
-        this.setState({ jobPostings: response.data.data });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
+  const navigate = useNavigate();
 
-  handleSubmit = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    const {
+
+    if (!job_title || !company_name || !job_description || !location || !industry ) {
+      setError('Please fill out all required fields');
+      return;
+    }
+
+    const newJobPosting = {
       job_title,
       company_name,
       salary,
@@ -38,99 +35,125 @@ class PostJob extends React.Component {
       location,
       industry,
       job_type,
-    } = this.state;
+      datePosted: new Date().toLocaleDateString('en-US'),
 
-    axios
-      .post('/api/jobs', {
-        job_title: job_title,
-        company_name: company_name,
-        salary: salary,
-        job_description: job_description,
-        location: location,
-        industry: industry,
-        job_type: job_type,
-      })
-      .then((response) => {
-        console.log(response);
-        this.setState({
-          error: 'Success!',
-          job_title: '',
-          company_name: '',
-          salary: '',
-          job_description: '',
-          location: '',
-          industry: '',
-          job_type: '',
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-        this.setState({
-          error:
-            'Failed to create job listing. Please try again.',
-        });
-      });
+    };
+    
+    const updatedJobPostings = [...jobPostings, newJobPosting];
+    localStorage.setItem('jobPostings', JSON.stringify(updatedJobPostings));
+
+    setJobPostings(updatedJobPostings);
+    setJobTitle('');
+    setCompanyName('');
+    setSalary('');
+    setJobDescription('');
+    setLocation('');
+    setIndustry('');
+    setJobType('');
+    setError('');
+
+    setNewJobPosted(newJobPosting);
+
+    setTimeout(() => {
+      navigate('/');
+    }, 2000);
   };
 
-  render() {
+  const handleDelete = (index) => {
+    const updatedJobPostings = [...jobPostings];
+    updatedJobPostings.splice(index, 1);
+    localStorage.setItem('jobPostings', JSON.stringify(updatedJobPostings));
+    setJobPostings(updatedJobPostings);
+  };
+
+  const handleApply = (index) => {
+    const updatedJobPostings = [...jobPostings];
+    updatedJobPostings[index].applicants = updatedJobPostings[index].applicants ? updatedJobPostings[index].applicants + 1 : 1;
+    localStorage.setItem('jobPostings', JSON.stringify(updatedJobPostings));
+    setJobPostings(updatedJobPostings);
+  };
+
+  const canSubmit = job_title && company_name && job_description && location && industry;
+
+
     return (
       <div>
-        <form onSubmit={this.handleSubmit}>
-          <h1>PUT THE CALL OUT:</h1>
-          {this.state.error && <div className="error">{this.state.error}</div>}
-          <label>
-            Job Title:
-            <input type="text" name="job_title" value={this.state.job_title} onChange={(event) => this.setState({job_title: event.target.value})} />
-          </label>
-          <label>
-            Company Name:
-            <input type="text" name="company_name" value={this.state.company_name} onChange={(event) => this.setState({company_name: event.target.value})} />
-          </label>
-          <label>
-            Salary:
-            <input type="text" name="salary" value={this.state.salary} onChange={(event) => this.setState({salary: event.target.value})} />
-          </label>
-          <label>
-            Description:
-            <textarea name="description" value={this.state.description} onChange={(event) => this.setState({description: event.target.value})}></textarea>
-          </label>
-          <label>
-            Location:
-            <input type="text" name="location" value={this.state.location} onChange={(event) => this.setState({location: event.target.value})} />
-          </label>
-          <label>
-            Industry:
-            <input type="text" name="industry" value={this.state.industry} onChange={(event) => this.setState({industry: event.target.value})} />
-          </label>
-          <label>
-            Type:
-            <input type="text" name="type" value={this.state.type} onChange={(event) => this.setState({type: event.target.value})} />
-          </label>
-          <button type="submit">Submit</button>
-        </form>
-    
-        <div>
-          <h2>Job Postings</h2>
-          <ul>
-            {this.state.jobPostings.map((jobPosting) => (
-              <li key={jobPosting.id}>
-                <h3>{jobPosting.job_title}</h3>
-                <p>{jobPosting.company_name}</p>
-                <p>{jobPosting.description}</p>
-                <p>{jobPosting.salary}</p>
-                <p>{jobPosting.location}</p>
-                <p>{jobPosting.industry}</p>
-                <p>{jobPosting.type}</p>
-                <p>{jobPosting.employer.name}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    );
-    
+      <form onSubmit={handleSubmit}>
+        <h1>POST A JOB!</h1>
+        {error && <div className="error">{error}</div>}
+        <label>
+          POSITION:
+          <input type="text" name="job_title" value={job_title} onChange={(event) => setJobTitle(event.target.value)} required />
+        </label>
+         
+        <label>
+          COMPANY NAME: 
+          <input type="text" name="company_name" value={company_name} onChange={(event) => setCompanyName(event.target.value)} required />
+        </label>
+        <label>
+          EXPECTED SALARY:
+          <select name="salary" value={salary} onChange={(event) => setSalary(event.target.value)} required>
+          <option value="Any">Any</option>
+            <option value="Negotiable">Negotiable</option>
+            <option value="less than 50000"> Less than 50000</option>
+            <option value="50000 - 100000"> 50000 - 100000</option>
+            <option value="100000 - 150000"> 100000 - 150000</option>
+            <option value="more than 150000"> More than 150000</option>
+  </select>
+</label>
+<label>
+DESCRIPTION:
+<textarea type="text" name="description" value={job_description} onChange={(event) => setJobDescription(event.target.value)} required />
+</label>
 
-  }
+
+<label>
+LOCATION:
+<input type="text" name="location" value={location} onChange={(event) => setLocation(event.target.value)} required />
+</label>
+<label>
+INDUSTRY
+<select id="industry" name="industry" value={industry} onChange={(event) => setIndustry(event.target.value)} required>
+<option value="Any">Any</option>
+<option value="Technology">Technology</option>
+<option value="Healthcare">Healthcare</option>
+<option value="Finance">Finance</option>
+<option value="Retail">Retail</option>
+<option value="Manufacturing">Manufacturing</option>
+<option value="Education">Education</option>
+<option value="Real Estate">Real Estate</option>
+<option value="Energy">Energy</option>
+<option value="Transportation">Transportation</option>
+<option value="Hospitality">Hospitality</option>
+<option value="Consulting">Consulting</option>
+<option value="Marketing">Marketing</option>
+<option value="Design">Design</option>
+<option value="Human Resources">Human Resources</option>
+<option value="Engineering">Engineering</option>
+<option value="Arts">Arts</option>
+</select>
+</label>
+<label>
+TYPE:
+<select id="jobtype" name="jobtype" value={job_type} onChange={(event) => setJobType(event.target.value)} required>
+<option value="Any">Any</option>
+<option value="Full-time">Full-Time</option>
+<option value="Part-time">Part-Time</option>
+<option value="Contract">Contract</option>
+<option value="Temporary">Temporary</option>
+</select>
+</label>
+<label></label>
+<button type="submit" onClick={handleSubmit}>POST</button>
+        </form>
+        {newJobPosted && (
+        <div className="success">
+          Job "{newJobPosted.job_title}" posted successfully!
+        </div>
+      )}
+      
+    </div>
+  );
 }
 
 export default PostJob;

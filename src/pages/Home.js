@@ -1,28 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './home.css';
 import Header from '../components/Header';
+import JobPostings from './JobPostings';
+import { useNavigate } from 'react-router-dom';
+
 
 function Home(props) {
-  
+  const [jobPostings, setJobPostings] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSalary, setSelectedSalary] = useState('');
   const [selectedLocation, setSelectedLocation] = useState('');
   const [selectedExperienceLevel, setSelectedExperienceLevel] = useState('');
   const [selectedJobType, setSelectedJobType] = useState('');
   const [selectedIndustry, setSelectedIndustry] = useState('');
+  const [jobOfInterestList, setJobOfInterestList] = useState([]);
+  const navigate = useNavigate();
 
-  const jobs = props.jobs
-    .map((job) => ({
-      ...job,
-      postingDate: new Date(job.postingDate),
-    }))
-    .filter((job) => {
-      const regex = new RegExp(searchTerm, 'gi');
-      return job.title.match(regex) || job.company.match(regex);
-    });
-    const handleSearchTermChange = (event) => {
-        setSearchTerm(event.target.value);
-      };
+  useEffect(() => {
+    const storedJobPostings = JSON.parse(localStorage.getItem('jobPostings')) || [];
+    setJobPostings(storedJobPostings);
+  }, []);
+
+  const handleDelete = (index) => {
+    const newJobPostings = [...jobPostings];
+    newJobPostings.splice(index, 1);
+    setJobPostings(newJobPostings);
+    localStorage.setItem('jobPostings', JSON.stringify(newJobPostings));
+  };
+
+  const handleAddJobOfInterest = (jobPosting) => {
+    const updatedJobOfInterestList = [...jobOfInterestList, jobPosting];
+    setJobOfInterestList(updatedJobOfInterestList);
+    localStorage.setItem('jobOfInterestList', JSON.stringify(updatedJobOfInterestList));
+    navigate('/pages/Login');
+  };
+
+  const handleSearchTermChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
 
   const handleSalaryChange = (e) => {
     setSelectedSalary(e.target.value);
@@ -43,90 +58,63 @@ function Home(props) {
   const handleIndustryChange = (e) => {
     setSelectedIndustry(e.target.value);
   };
-  const filteredJobs = jobs.filter(job => {
 
-  if (searchTerm) {
-    if (!job.title.toLowerCase().includes(searchTerm.toLowerCase())) {
+  const filteredJobs = jobPostings.filter((jobPosting) => {
+    if (searchTerm && !jobPosting.job_title.toLowerCase().includes(searchTerm.toLowerCase())) {
       return false;
     }
-  }
- 
-  if (selectedLocation) {
-    if (job.location !== selectedLocation) {
+    if (selectedLocation && jobPosting.location !== selectedLocation) {
       return false;
     }
-  }
-  
-  if (selectedSalary) {
-    if (job.salary !== selectedSalary) {
+    if (selectedSalary && jobPosting.salary !== selectedSalary) {
       return false;
     }
-  }
-
-  if (selectedExperienceLevel) {
-    if (job.experienceLevel !== selectedExperienceLevel) {
+    if (selectedExperienceLevel && jobPosting.experienceLevel !== selectedExperienceLevel) {
       return false;
     }
-  }
- 
-  if (selectedJobType) {
-    if (job.jobType !== selectedJobType) {
+    if (selectedJobType && jobPosting.jobType !== selectedJobType) {
       return false;
     }
-  }
-  
-  if (selectedIndustry) {
-    if (job.industry !== selectedIndustry) {
+    if (selectedIndustry && jobPosting.industry !== selectedIndustry) {
       return false;
     }
-  }
-  return true;
-});
+    return true;
+  });
 
   const handleFilter = () => {
-    const filteredJobs = jobs
-    .filter((job) => !searchTerm || job.title.toLowerCase().includes(searchTerm.toLowerCase()) || job.company.toLowerCase().includes(searchTerm.toLowerCase()))
-    .filter((job) => !selectedLocation || job.location === selectedLocation)
-    .filter((job) => !selectedSalary || job.salary === selectedSalary)
-    .filter((job) => !selectedExperienceLevel || job.experienceLevel === selectedExperienceLevel)
-    .filter((job) => !selectedJobType || job.jobType === selectedJobType)
-    .filter((job) => !selectedIndustry || job.industry === selectedIndustry);
-  
-
-    return filteredJobs.map((job) => (
-      <div key={job.id} className="job-listing">
+    return filteredJobs.map((jobPosting) => (
+      <div key={jobPosting.id} className="job-listing">
         <div className="job-header">
-          <h4>{job.title}</h4>
-          <h3>{job.company}</h3>
         </div>
         <div className="job-body">
-          <p><strong>Salary:</strong> {job.salary}</p>
-          <p><strong>Description:</strong> {job.description}</p>
-          <p><strong>Location:</strong> {job.location}</p>
-          <p><strong>Date Posted:</strong> {job.postingDate.toLocaleDateString()}</p>
-          <p><strong>Industry:</strong> {job.industry}</p>
-          <p><strong>Experience Level:</strong> {job.experienceLevel}</p>
-          <p><strong>Job Type:</strong> {job.jobType}</p>
+          <p><strong>Title:</strong> {jobPosting.jobTitle}</p>
+          <p><strong>Salary:</strong> {jobPosting.salary}</p>
+          <p><strong>Description:</strong> {jobPosting.jobDescription}</p>
+          <p><strong>Date Posted:</strong> {new Date(jobPosting.postingDate).toLocaleDateString()}</p>
+          <p><strong>Industry:</strong> {jobPosting.industry}</p>
+          <p><strong>Job Type:</strong> {jobPosting.jobType}</p>
+          <p><strong>Location:</strong> {jobPosting.location}</p>
         </div>
-        
       </div>
     ));
   };
-  handleFilter();
+
+
+
 
   return (
-  
+     
     <div className="home-container">
       <Header />
       <h1>Find Your Passion, Land Your Dream Job:</h1>
       <p style={{ fontSize: "24px" }}>Start Your Job Search Now!</p>
-     
       <div className="search-filters">
         <input type="text" placeholder="Search jobs" value={searchTerm} onChange={handleSearchTermChange} />
         <div className="filter-group">
           <label htmlFor="salary">Salary:</label>
           <select id="salary" value={selectedSalary} onChange={handleSalaryChange}>
             <option value="">Any</option>
+            <option value="">Negotiable</option>
             <option value="less than 50000">Less than 50000</option>
             <option value="50000 - 100000">50000 - 100000</option>
             <option value="100000 - 150000">100000 - 150000</option>
@@ -145,15 +133,7 @@ function Home(props) {
        
           </select>
         </div>
-        <div className="filter-group">
-          <label htmlFor="experience-level">Experience Level:</label>
-          <select id="experience-level" value={selectedExperienceLevel} onChange={handleExperienceLevelChange}>
-            <option value="">Any</option>
-            <option value="Entry Level">Entry Level</option>
-            <option value="Mid Level">Mid Level</option>
-            <option value="Senior Level">Senior Level</option>
-          </select>
-        </div>
+      
         <div className="filter-group">
           <label htmlFor="job-type">Job Type:</label>
           <select id="job-type" value={selectedJobType} onChange={handleJobTypeChange}>
@@ -189,33 +169,42 @@ function Home(props) {
        
 
 </div>
+<>
+
+<p style={{ fontSize: "30px" }}>Available Postings:</p>
+        {filteredJobs.length > 0 ? (
+          <div>
+            {filteredJobs.map((jobPosting) => (
+              <div key={jobPosting.id} className="job-listing">
+                <div className="job-header"></div>
+                <div className="job-body">
+                  <h4 >{jobPosting.job_title}</h4>
+                  <h3>{jobPosting.company_name}</h3>
+                  <p style={{ fontSize: "22px" }}><strong>Salary:</strong> {jobPosting.salary}</p>
+                  <p style={{ fontSize: "22px" }}><strong>Description:</strong> {jobPosting.job_description}</p>
+                  <p style={{ fontSize: "22px" }}><strong>Industry:</strong> {jobPosting.industry}</p>
+                  <p style={{ fontSize: "22px" }}><strong>Job Type:</strong> {jobPosting.job_type}</p>
+                  <p style={{ fontSize: "22px" }}><strong>Location:</strong> {jobPosting.location}</p>
+                  <p style={{ fontSize: "22px" }}><strong>Date Posted:</strong> {new Date(jobPosting.datePosted).toLocaleDateString()}</p>
+                  <button className="apply-button" onClick={() => handleAddJobOfInterest(jobPosting)}>Apply</button>
+                </div>
+              </div>
+            ))}
+
+           </div>
+        ) : (
+          <p>No jobs found</p>
+        )}
+      </>
+    </div>
+  </div>
+);
 
 
 
 
-      </div>
-      <div className="job-listings">{filteredJobs.map((job) => (
-        <div key={job.id} className="job-listing">
-          <div className="job-header">
-            <h4>{job.title}</h4>
-            <h3>{job.company}</h3>
-          </div>
-          <div className="job-body">
-            <p><strong>Salary:</strong> {job.salary}</p>
-            <p><strong>Description:</strong> {job.description}</p>
-            <p><strong>Location:</strong> {job.location}</p>
-            <p><strong>Industry:</strong> {job.industry}</p>
-            <p><strong>Type:</strong> {job.jobType}</p>
-            <p><strong>Date Posted:</strong> {job.postingDate.toLocaleString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })}</p>
-            <button className="apply-button" onClick={() => window.location.href = 'pages/Login'}>Apply</button>
-            
-            </div>
-            </div>
-          ))}
-        </div>
-      </div>
-  
-  );
-}
+
+
+  }
+
 export default Home;
-  

@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ViewApplicants = () => {
+const Update = () => {
   return (
     <div>
       <h1>Coming Soon</h1>
@@ -8,4 +8,4 @@ const ViewApplicants = () => {
   );
 }
 
-export default ViewApplicants;
+export default Update;
