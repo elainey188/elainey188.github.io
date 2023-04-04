@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import './home.css';
 import Header from '../components/Header';
 import JobPostings from './JobPostings';
-import { useNavigate} from 'react-router-dom';
-import { colors } from 'laravel-mix/src/Log';
+import { useNavigate } from 'react-router-dom';
+
 
 function Home(props) {
   const [jobPostings, setJobPostings] = useState([]);
@@ -13,7 +13,7 @@ function Home(props) {
   const [selectedExperienceLevel, setSelectedExperienceLevel] = useState('');
   const [selectedJobType, setSelectedJobType] = useState('');
   const [selectedIndustry, setSelectedIndustry] = useState('');
-  
+  const [jobOfInterestList, setJobOfInterestList] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,25 +21,19 @@ function Home(props) {
     setJobPostings(storedJobPostings);
   }, []);
 
-  const jobs = props.jobs
-  .map((job) => ({
-    ...job,
-    postingDate: new Date(job.postingDate),
-  }))
-  .filter((job) => {
-    const regex = new RegExp(searchTerm, 'gi');
-    return job.title.match(regex) || job.company.match(regex);
-  });
- 
-
   const handleDelete = (index) => {
     const newJobPostings = [...jobPostings];
     newJobPostings.splice(index, 1);
     setJobPostings(newJobPostings);
     localStorage.setItem('jobPostings', JSON.stringify(newJobPostings));
-  }
+  };
 
-  
+  const handleAddJobOfInterest = (jobPosting) => {
+    const updatedJobOfInterestList = [...jobOfInterestList, jobPosting];
+    setJobOfInterestList(updatedJobOfInterestList);
+    localStorage.setItem('jobOfInterestList', JSON.stringify(updatedJobOfInterestList));
+    navigate('/pages/Login');
+  };
 
   const handleSearchTermChange = (event) => {
     setSearchTerm(event.target.value);
@@ -65,74 +59,48 @@ function Home(props) {
     setSelectedIndustry(e.target.value);
   };
 
-  const filteredJobs = jobs.filter(job => {
-
-    if (searchTerm) {
-      if (!job.title.toLowerCase().includes(searchTerm.toLowerCase())) {
-        return false;
-      }
+  const filteredJobs = jobPostings.filter((jobPosting) => {
+    if (searchTerm && !jobPosting.job_title.toLowerCase().includes(searchTerm.toLowerCase())) {
+      return false;
     }
-   
-    if (selectedLocation) {
-      if (job.location !== selectedLocation) {
-        return false;
-      }
+    if (selectedLocation && jobPosting.location !== selectedLocation) {
+      return false;
     }
-    
-    if (selectedSalary) {
-      if (job.salary !== selectedSalary) {
-        return false;
-      }
+    if (selectedSalary && jobPosting.salary !== selectedSalary) {
+      return false;
     }
-  
-    if (selectedExperienceLevel) {
-      if (job.experienceLevel !== selectedExperienceLevel) {
-        return false;
-      }
+    if (selectedExperienceLevel && jobPosting.experienceLevel !== selectedExperienceLevel) {
+      return false;
     }
-   
-    if (selectedJobType) {
-      if (job.jobType !== selectedJobType) {
-        return false;
-      }
+    if (selectedJobType && jobPosting.jobType !== selectedJobType) {
+      return false;
     }
-    
-    if (selectedIndustry) {
-      if (job.industry !== selectedIndustry) {
-        return false;
-      }
+    if (selectedIndustry && jobPosting.industry !== selectedIndustry) {
+      return false;
     }
     return true;
   });
 
   const handleFilter = () => {
-    const filteredJobs = jobs
-    .filter((job) => !searchTerm || job.title.toLowerCase().includes(searchTerm.toLowerCase()) || job.company.toLowerCase().includes(searchTerm.toLowerCase()))
-    .filter((job) => !selectedSalary || job.salary === selectedSalary)
-    .filter((job) => !selectedJobType || job.jobType === selectedJobType)
-    .filter((job) => !selectedIndustry || job.industry === selectedIndustry);
-  
-
-     filteredJobs.map((job) => (
-      <div key={job.id} className="job-listing">
+    return filteredJobs.map((jobPosting) => (
+      <div key={jobPosting.id} className="job-listing">
         <div className="job-header">
-         
         </div>
-       
         <div className="job-body">
-       
-          <p><strong>Salary:</strong> {job.salary}</p>
-          <p><strong>Description:</strong> {job.description}</p>
-          <p><strong>Date Posted:</strong> {job.postingDate.toLocaleDateString()}</p>
-          <p><strong>Industry:</strong> {job.industry}</p>
-          <p><strong>Job Type:</strong> {job.jobType}</p>
+          <p><strong>Title:</strong> {jobPosting.jobTitle}</p>
+          <p><strong>Salary:</strong> {jobPosting.salary}</p>
+          <p><strong>Description:</strong> {jobPosting.jobDescription}</p>
+          <p><strong>Date Posted:</strong> {new Date(jobPosting.postingDate).toLocaleDateString()}</p>
+          <p><strong>Industry:</strong> {jobPosting.industry}</p>
+          <p><strong>Job Type:</strong> {jobPosting.jobType}</p>
+          <p><strong>Location:</strong> {jobPosting.location}</p>
         </div>
-        
       </div>
     ));
   };
-  handleFilter();
-  
+
+
+
 
   return (
      
@@ -203,20 +171,39 @@ function Home(props) {
 </div>
 <>
 
-   
 <p style={{ fontSize: "30px" }}>Available Postings:</p>
-    <JobPostings jobPostings={jobPostings} handleDelete={handleDelete} />
- 
-    
+        {filteredJobs.length > 0 ? (
+          <div>
+            {filteredJobs.map((jobPosting) => (
+              <div key={jobPosting.id} className="job-listing">
+                <div className="job-header"></div>
+                <div className="job-body">
+                  <h4 >{jobPosting.job_title}</h4>
+                  <h3>{jobPosting.company_name}</h3>
+                  <p style={{ fontSize: "22px" }}><strong>Salary:</strong> {jobPosting.salary}</p>
+                  <p style={{ fontSize: "22px" }}><strong>Description:</strong> {jobPosting.job_description}</p>
+                  <p style={{ fontSize: "22px" }}><strong>Industry:</strong> {jobPosting.industry}</p>
+                  <p style={{ fontSize: "22px" }}><strong>Job Type:</strong> {jobPosting.job_type}</p>
+                  <p style={{ fontSize: "22px" }}><strong>Location:</strong> {jobPosting.location}</p>
+                  <p style={{ fontSize: "22px" }}><strong>Date Posted:</strong> {new Date(jobPosting.datePosted).toLocaleDateString()}</p>
+                  <button className="apply-button" onClick={() => handleAddJobOfInterest(jobPosting)}>Apply</button>
+                </div>
+              </div>
+            ))}
+
+           </div>
+        ) : (
+          <p>No jobs found</p>
+        )}
+      </>
+    </div>
+  </div>
+);
 
 
-</>
 
-</div>
 
-</div>
-)
-  
+
 
   }
 

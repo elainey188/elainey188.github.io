@@ -24,10 +24,9 @@ const Register = ({ history }) => {
   };
 
   
-
   const handleSubmit = (event) => {
     event.preventDefault();
-
+  
     if (!name || !email || !password || !location) {
       setName("");
       setEmail("");
@@ -36,15 +35,27 @@ const Register = ({ history }) => {
       setBio("");
       alert("Please fill in all fields");
     } else {
+      const enteredEmail = email.trim();
+      const storedEmail = localStorage.getItem('email');
+  
+      if (storedEmail !== null && storedEmail === enteredEmail) {
+       
+        console.log('Email already registered!');
+        alert('User Already exists');
+      } else {
+        
+        localStorage.setItem('email', enteredEmail);
+        console.log('Registration successful!');
+        setIsRegistered(true);
+        localStorage.setItem('user', JSON.stringify({ name, email, location, bio }));
+        alert("Registration successful! You can now login.");
+        localStorage.setItem('userEmail', email);
+      }
+  
       console.log(`Name: ${name}, Email: ${email}, Password: ${password}, Location: ${location}`);
-      setIsRegistered(true);
-      localStorage.setItem('user', JSON.stringify({ name, email, location, bio }));
-      alert("Registration successful! You can now login.");
-     
-      
-      
     }
   };
+  
 
   const handleAutofill = (event) => {
    
