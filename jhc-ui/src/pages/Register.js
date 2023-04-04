@@ -41,7 +41,7 @@ const Register = ({ history }) => {
       if (storedEmail !== null && storedEmail === enteredEmail) {
        
         console.log('Email already registered!');
-        alert('User Already exists');
+        alert('User With This Email Already exists!');
       } else {
         
         localStorage.setItem('email', enteredEmail);

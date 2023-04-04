@@ -17,6 +17,7 @@ import Update from './pages/update';
 import ProfileRender from './pages/ProfileRender';
 import ViewApplicants from './pages/view-applicants';
 import JobOfInterest from './pages/JobOfInterest';
+import ForgotPassword from './pages/forgot-password';
 
 
 
@@ -175,6 +176,7 @@ postingDate: '2023-03-03'
         <Route path="/pages/update" element={<Update />} />
         <Route path="/pages/view-applicants" element={<ViewApplicants />} />
         <Route path="/pages/ProfileRender" element={<ProfileRender />}  /> 
+        <Route path="/pages/forgot-password" element={<ForgotPassword />}  />
         <Route path="/pages/JobOfInterest" element={<JobOfInterest />} />
 
        
