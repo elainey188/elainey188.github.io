@@ -68,7 +68,7 @@ const Register = ({ history }) => {
       setName('John Doe');
       setEmail('johndoe@example.com');
       setPassword('password');
-      setBio('Lorem ipsum dolor sit amet, consectetur adipiscing elit.');
+      setBio('I am a programmer. My favorite languages are JavaScript and PHP');
       setLocation('San Francisco, CA');
       setPhone(2899999999);
       event.target.reset();
