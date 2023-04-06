@@ -1,13 +1,14 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEnvelope, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
+import { faEnvelope, faMapMarkerAlt , faP, faPhone} from "@fortawesome/free-solid-svg-icons";
+
 
 function ProfileRender(props) {
  
 
   
 
-  const { name, bio, email, location } = props;
+  const { name, bio, email, location, phone } = props;
   const avatarUrls = [
     'https://img.freepik.com/free-icon/priest_318-211734.jpg?size=626&ext=jpg',
     'https://img.freepik.com/free-icon/waiter_318-505999.jpg?size=626&ext=jpg',
@@ -39,6 +40,7 @@ function ProfileRender(props) {
       <p>{bio}</p>
       <p><FontAwesomeIcon icon={faEnvelope} />{email}</p>
       <p><FontAwesomeIcon icon={faMapMarkerAlt} /> {location}</p>
+      <p><FontAwesomeIcon icon={faPhone} /> {phone}</p>
     </div>
   );
 }

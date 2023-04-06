@@ -131,14 +131,15 @@ INDUSTRY
 <option value="Human Resources">Human Resources</option>
 <option value="Engineering">Engineering</option>
 <option value="Arts">Arts</option>
+<option value="Other">Other</option>
 </select>
 </label>
 <label>
 TYPE:
 <select id="jobtype" name="jobtype" value={job_type} onChange={(event) => setJobType(event.target.value)} required>
 <option value="Any">Any</option>
-<option value="Full-time">Full-Time</option>
-<option value="Part-time">Part-Time</option>
+<option value="Full-Time">Full-Time</option>
+<option value="Part-Time">Part-Time</option>
 <option value="Contract">Contract</option>
 <option value="Temporary">Temporary</option>
 </select>

@@ -13,6 +13,7 @@ const Register = ({ history }) => {
   const [isRegistered, setIsRegistered] = useState(false);
   const [location, setLocation] = useState("");
   const [bio, setBio] = useState("");
+  const [phone, setPhone] = useState("");
   const [NavigateToProfile, setNavigateToProfile] = useState(false);
 
   const navigate = useNavigate();
@@ -33,6 +34,7 @@ const Register = ({ history }) => {
       setPassword("");
       setLocation("");
       setBio("");
+      setPhone("")
       alert("Please fill in all fields");
     } else {
       const enteredEmail = email.trim();
@@ -47,7 +49,7 @@ const Register = ({ history }) => {
         localStorage.setItem('email', enteredEmail);
         console.log('Registration successful!');
         setIsRegistered(true);
-        localStorage.setItem('user', JSON.stringify({ name, email, location, bio }));
+        localStorage.setItem('user', JSON.stringify({ name, email, location, bio, phone }));
         alert("Registration successful! You can now login.");
         localStorage.setItem('userEmail', email);
       }
@@ -68,11 +70,12 @@ const Register = ({ history }) => {
       setPassword('password');
       setBio('Lorem ipsum dolor sit amet, consectetur adipiscing elit.');
       setLocation('San Francisco, CA');
+      setPhone(2899999999);
       event.target.reset();
 
     if (isRegistered) {
       return (
-        <MyProfile name={name} email={email} location={location} bio={bio} />
+        <MyProfile name={name} email={email} location={location} bio={bio} phone={phone} />
       );
     }
   };
@@ -111,6 +114,12 @@ return ( <div style={{ textAlign: "center", maxWidth: "500px", margin: "0 auto",
       <input type="text" id="location" value={location} onChange={(event) => setLocation(event.target.value)}
         style={{ width: "100%", padding: "12px", border: "1px solid #ccc", borderRadius: "4px", boxSizing: "border-box", fontSize: "1.2em" }} />
     </div>
+    <div style={{ marginBottom: "20px" }}>
+      <label htmlFor="phone" style={{ display: "block", fontSize: "1.2em", marginBottom: "5px" }}>Phone</label>
+      <input type="integer" id="phone" value={phone} onChange={(event) => setPhone(event.target.value)}
+        style={{ width: "100%", padding: "12px", border: "1px solid #ccc", borderRadius: "4px", boxSizing: "border-box", fontSize: "1.2em" }} />
+    </div>
+
 
     <button type="submit"
 
@@ -133,7 +142,7 @@ style={{ backgroundColor: "#ccc", color: "#fff", padding: "12px", borderRadius: 
            <h1>Profile Updated!</h1>
          
      
-            <MyProfile name={name} bio={bio} email={email} location={location}  />
+            <MyProfile name={name} bio={bio} email={email} location={location}  phone={phone} />
 
 </div>
 )}

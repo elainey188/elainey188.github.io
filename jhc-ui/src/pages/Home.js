@@ -72,7 +72,7 @@ function Home(props) {
     if (selectedExperienceLevel && jobPosting.experienceLevel !== selectedExperienceLevel) {
       return false;
     }
-    if (selectedJobType && jobPosting.jobType !== selectedJobType) {
+    if (selectedJobType && jobPosting.job_type !== selectedJobType) {
       return false;
     }
     if (selectedIndustry && jobPosting.industry !== selectedIndustry) {
@@ -87,12 +87,12 @@ function Home(props) {
         <div className="job-header">
         </div>
         <div className="job-body">
-          <p><strong>Title:</strong> {jobPosting.jobTitle}</p>
+          <p><strong>Title:</strong> {jobPosting.job_title}</p>
           <p><strong>Salary:</strong> {jobPosting.salary}</p>
           <p><strong>Description:</strong> {jobPosting.jobDescription}</p>
           <p><strong>Date Posted:</strong> {new Date(jobPosting.postingDate).toLocaleDateString()}</p>
           <p><strong>Industry:</strong> {jobPosting.industry}</p>
-          <p><strong>Job Type:</strong> {jobPosting.jobType}</p>
+          <p><strong>Job Type:</strong> {jobPosting.job_type}</p>
           <p><strong>Location:</strong> {jobPosting.location}</p>
         </div>
       </div>
@@ -114,7 +114,7 @@ function Home(props) {
           <label htmlFor="salary">Salary:</label>
           <select id="salary" value={selectedSalary} onChange={handleSalaryChange}>
             <option value="">Any</option>
-            <option value="">Negotiable</option>
+            <option value="Negotiable">Negotiable</option>
             <option value="less than 50000">Less than 50000</option>
             <option value="50000 - 100000">50000 - 100000</option>
             <option value="100000 - 150000">100000 - 150000</option>
@@ -126,20 +126,22 @@ function Home(props) {
           <select id="location" value={selectedLocation} onChange={handleLocationChange}>
             <option value="">Any</option>
             <option value="Remote/Work From Home">Remote/Work From Home</option>
-            <option value="New York, NY">New York, NY</option>
-            <option value="San Francisco, SF">San Francisco, SF</option>
-            <option value="Chicago, IL">Chicago, IL</option>
+            <option value="Oshawa,ON">Oshawa, ON</option>
+            <option value="Vancouver, BC">Vancouver, BC</option>
+            <option value="Red Deer, AB">Red Deer, AB</option>
+            <option value="Edmonton, AB">Edomonton, AB</option>
        
        
           </select>
         </div>
       
         <div className="filter-group">
-          <label htmlFor="job-type">Job Type:</label>
-          <select id="job-type" value={selectedJobType} onChange={handleJobTypeChange}>
+          <label htmlFor="job_type">Job Type:</label>
+          <select id="job_type" value={selectedJobType} onChange={handleJobTypeChange}>
             <option value="">Any</option>
-            <option value="Full-time">Full-Time</option>
-            <option value="Part-time">Part-Time</option>
+            
+            <option value="Full-Time">Full-Time</option>
+            <option value="Part-Time">Part-Time</option>
             <option value="Contract">Contract</option>
             <option value="Temporary">Temporary</option>
           </select>
@@ -162,6 +164,9 @@ function Home(props) {
   <option value="Marketing">Marketing</option>
   <option value="Design">Design</option>
   <option value="Human Resources">Human Resources</option>
+  <option value="Engineering">Engineering</option>
+  <option value="Arts">Arts</option>
+  <option value="Other">Other</option>
 
          </select>
         </div>

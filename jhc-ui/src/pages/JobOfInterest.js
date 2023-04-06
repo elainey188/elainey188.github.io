@@ -28,6 +28,7 @@ function JobOfInterest() {
       {jobOfInterestList.map((jobPosting, index) => (
         <div key={index} className="job-listing">
           <div className="job-header">
+          <h4  style={{fontSize : "52px"}}>Job(s) Of Interest</h4>
             <h4>{jobPosting.job_title}</h4>
             <h3>{jobPosting.company_name}</h3>
             <p>

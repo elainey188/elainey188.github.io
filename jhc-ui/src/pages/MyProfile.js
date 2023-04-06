@@ -1,26 +1,33 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import ProfileRender from "./ProfileRender";
 import "./home.css";
 
 function MyProfile() {
-const user = JSON.parse(localStorage.getItem("user"));
+  const [user, setUser] = useState(null);
 
-if (!user) {
-return <h4>Please log in to view your profile.</h4>;
-}
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
-const { name, email, location, bio } = user;
+  if (!user) {
+    return <h4>Please log in to view your profile.</h4>;
+  }
 
-return (
-<div className="profile-container">
-<div className="profile-header">
-<h1>My Profile</h1>
-</div>
-<div className="profile-body">
-<ProfileRender name={name} email={email} location={location} bio={bio} />
-</div>
-</div>
-);
+  const { name, email, location, bio, phone } = user;
+
+  return (
+    <div className="profile-container">
+      <div className="profile-header">
+        <h1>My Profile</h1>
+      </div>
+      <div className="profile-body">
+        <ProfileRender name={name} email={email} location={location} bio={bio} phone={phone} />
+      </div>
+    </div>
+  );
 }
 
 export default MyProfile;

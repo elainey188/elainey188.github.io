@@ -3,10 +3,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 
-function JobPostings({ jobPostings, handleDelete }) {
+function JobPostings({ jobPostings, handleDelete ,addNewJobPosting }) {
   const currentPath = window.location.pathname;
   const navigate = useNavigate();
   const [jobOfInterestList, setJobOfInterestList] = useState([]);
+  
 
   const handleUpdate = (jobPosting) => {
     navigate('/pages/update', { state: { jobPosting } });
@@ -18,6 +19,8 @@ function JobPostings({ jobPostings, handleDelete }) {
     localStorage.setItem('jobOfInterestList', JSON.stringify(updatedJobOfInterestList));
     navigate('/pages/Login');
   };
+
+  
   
 
   return (
